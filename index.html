@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airdrop Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪂</text></svg>">
+    <link rel="stylesheet" href="css/utilities.css">
+    <link rel="stylesheet" href="css/components/header.css">
+    <link rel="stylesheet" href="css/components/table.css">
+    <link rel="stylesheet" href="css/components/modal.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Component -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-parachute-box"></i>
+                <span>AirdropTracker</span>
+            </div>
+            <div class="header-controls">
+                <div class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="columns-control">
+                    <div class="columns-toggle" id="columnsToggle" title="Manage Columns">
+                        <i class="fas fa-columns"></i>
+                    </div>
+                    <div class="columns-dropdown" id="columnsDropdown">
+                        <div class="column-option">
+                            <input type="checkbox" id="col-project" value="project" checked>
+                            <label for="col-project">Project</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-chain" value="chain" checked>
+                            <label for="col-chain">Chain</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-category" value="category" checked>
+                            <label for="col-category">Category</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-status" value="status" checked>
+                            <label for="col-status">Status</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-progress" value="progress" checked>
+                            <label for="col-progress">Progress</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-tasks" value="tasks" checked>
+                            <label for="col-tasks">Tasks</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-projectStart" value="projectStart" checked>
+                            <label for="col-projectStart">Project Started</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-dateStarted" value="dateStarted" checked>
+                            <label for="col-dateStarted">Date Started</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-lastChecked" value="lastChecked" checked>
+                            <label for="col-lastChecked">Last Checked</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-urgency" value="urgency" checked>
+                            <label for="col-urgency">Urgency</label>
+                        </div>
+                        <div class="column-option">
+                            <input type="checkbox" id="col-socials" value="socials" checked>
+                            <label for="col-socials">Socials</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn" id="addAirdropBtn">
+                    <i class="fas fa-plus"></i> Add Airdrop
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Table Container -->
+        <div class="card">
+            <div class="table-controls">
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <div class="filter-label">Status</div>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Urgency</div>
+                        <select class="form-select" id="urgencyFilter">
+                            <option value="all">All Urgency</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search projects, chains, categories...">
+                </div>
+            </div>
+
+            <!-- Airdrop Table -->
+            <table class="airdrop-table" id="airdropTable">
+                <thead>
+                    <tr>
+                        <th data-sort="project">Project <i class="fas fa-sort"></i></th>
+                        <th data-sort="chain">Chain <i class="fas fa-sort"></i></th>
+                        <th data-sort="category">Category <i class="fas fa-sort"></i></th>
+                        <th data-sort="status">Status <i class="fas fa-sort"></i></th>
+                        <th data-sort="progress">Progress <i class="fas fa-sort"></i></th>
+                        <th data-sort="tasks">Tasks <i class="fas fa-sort"></i></th>
+                        <th data-sort="projectStart">Project Started <i class="fas fa-sort"></i></th>
+                        <th data-sort="dateStarted">Date Started <i class="fas fa-sort"></i></th>
+                        <th data-sort="lastChecked">Last Checked <i class="fas fa-sort"></i></th>
+                        <th data-sort="urgency">Urgency <i class="fas fa-sort"></i></th>
+                        <th>Socials</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Table rows will be generated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Airdrop Modal -->
+    <div class="modal" id="addAirdropModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Airdrop</h3>
+                <button class="action-btn close-modal">&times;</button>
+            </div>
+            <form id="addAirdropForm">
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" class="form-control" name="projectName" required>
+                </div>
+                <div class="form-group">
+                    <label>Chain</label>
+                    <select class="form-select" name="chain">
+                        <option value="">Select Chain</option>
+                        <option value="Ethereum">Ethereum</option>
+                        <option value="Solana">Solana</option>
+                        <option value="Binance Smart Chain">Binance Smart Chain</option>
+                        <option value="Polygon">Polygon</option>
+                        <option value="Arbitrum">Arbitrum</option>
+                        <option value="Avalanche">Avalanche</option>
+                        <option value="Base">Base</option>
+                        <option value="Optimism">Optimism</option>
+                        <option value="Starknet">Starknet</option>
+                        <option value="Sui">Sui</option>
+                        <option value="Aptos">Aptos</option>
+                        <option value="Cosmos">Cosmos</option>
+                        <option value="Polkadot">Polkadot</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select class="form-select" name="category">
+                        <option value="">Select Category</option>
+                        <option value="DeFi">DeFi</option>
+                        <option value="NFT">NFT</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Social">Social</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="AI">AI</option>
+                        <option value="DePIN">DePIN</option>
+                        <option value="Layer 2">Layer 2</option>
+                        <option value="Modular">Modular</option>
+                        <option value="Restaking">Restaking</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select class="form-select" name="status" required>
+                        <option value="active">Active</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Project Start Date</label>
+                    <input type="date" class="form-control" name="projectStart" required>
+                </div>
+                <div class="form-group">
+                    <label>Date Started</label>
+                    <input type="date" class="form-control" name="dateStarted">
+                </div>
+                <div class="form-group">
+                    <label>Urgency</label>
+                    <select class="form-select" name="urgency" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger close-modal">Cancel</button>
+                    <button type="submit" class="btn">Add Airdrop</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Airdrop Modal -->
+    <div class="modal" id="editAirdropModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Airdrop</h3>
+                <button class="action-btn close-modal">&times;</button>
+            </div>
+            <form id="editAirdropForm">
+                <input type="hidden" name="editId" id="editId">
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" class="form-control" name="editProjectName" id="editProjectName" required>
+                </div>
+                <div class="form-group">
+                    <label>Chain</label>
+                    <select class="form-select" name="editChain" id="editChain">
+                        <option value="">Select Chain</option>
+                        <option value="Ethereum">Ethereum</option>
+                        <option value="Solana">Solana</option>
+                        <option value="Binance Smart Chain">Binance Smart Chain</option>
+                        <option value="Polygon">Polygon</option>
+                        <option value="Arbitrum">Arbitrum</option>
+                        <option value="Avalanche">Avalanche</option>
+                        <option value="Base">Base</option>
+                        <option value="Optimism">Optimism</option>
+                        <option value="Starknet">Starknet</option>
+                        <option value="Sui">Sui</option>
+                        <option value="Aptos">Aptos</option>
+                        <option value="Cosmos">Cosmos</option>
+                        <option value="Polkadot">Polkadot</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select class="form-select" name="editCategory" id="editCategory">
+                        <option value="">Select Category</option>
+                        <option value="DeFi">DeFi</option>
+                        <option value="NFT">NFT</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Social">Social</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="AI">AI</option>
+                        <option value="DePIN">DePIN</option>
+                        <option value="Layer 2">Layer 2</option>
+                        <option value="Modular">Modular</option>
+                        <option value="Restaking">Restaking</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select class="form-select" name="editStatus" id="editStatus" required>
+                        <option value="active">Active</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Project Start Date</label>
+                    <input type="date" class="form-control" name="editProjectStart" id="editProjectStart" required>
+                </div>
+                <div class="form-group">
+                    <label>Date Started</label>
+                    <input type="date" class="form-control" name="editDateStarted" id="editDateStarted">
+                </div>
+                <div class="form-group">
+                    <label>Urgency</label>
+                    <select class="form-select" name="editUrgency" id="editUrgency" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Social Links</label>
+                    <div id="editSocialLinks" class="social-links-editable">
+                        <!-- Social links will be populated dynamically -->
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger close-modal">Cancel</button>
+                    <button type="submit" class="btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Task</h3>
+                <button class="action-btn close-modal">&times;</button>
+            </div>
+            <form id="addTaskForm">
+                <input type="hidden" name="airdropId" id="taskAirdropId">
+                <div class="form-group">
+                    <label>Task Name</label>
+                    <input type="text" class="form-control" name="taskName" required>
+                </div>
+                <div class="form-group">
+                    <label>Reset Type</label>
+                    <select class="form-select" name="taskRecurrence" required>
+                        <option value="one-time">One-time</option>
+                        <option value="daily">Daily Reset</option>
+                        <option value="24h">24-hour Reset</option>
+                        <option value="utc-reset">00:00 UTC Reset</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group" id="customTimerGroup" style="display: none;">
+                    <label>Custom Timer (hours)</label>
+                    <input type="number" class="form-control" name="customTimer" min="1" max="744" placeholder="Enter hours">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger close-modal">Cancel</button>
+                    <button type="submit" class="btn">Add Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/data/airdropData.js"></script>
+    <script src="js/components/tableRenderer.js"></script>
+    <script src="js/components/modalManager.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

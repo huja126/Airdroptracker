@@ -1,0 +1,7 @@
+/* Main Styles - Import all components */
+@import url('utilities.css');
+@import url('components/header.css');
+@import url('components/table.css');
+@import url('components/modal.css');
+
+/* Additional global styles can go here */
